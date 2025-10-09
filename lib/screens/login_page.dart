@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Успешная авторизация')),
                       );
-                      context.router.pushAndPopUntil(MainRoute(), predicate: (_) => false);
+                      context.router.replace(MainRoute());
                     }
 
                     if (state is UserAuthFailure) {
@@ -109,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
             // === Нижняя статичная часть ===
             Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
-              child: Text('Версия: 0.7', style: AppTextStyle.style14w400),
+              child: Text('Версия: 0.8.7', style: AppTextStyle.style14w400),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),

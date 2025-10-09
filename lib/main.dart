@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventerization_4aas/cubit/cabinet/cabinet_cubit.dart';
 import 'package:inventerization_4aas/cubit/notification/notification_cubit.dart';
+import 'package:inventerization_4aas/cubit/printer/printer_cubit.dart';
 import 'package:inventerization_4aas/cubit/product/product_cubit.dart';
+import 'package:inventerization_4aas/cubit/transfer/transfer_counts_cubit.dart';
 import 'package:inventerization_4aas/cubit/transfer/transfer_cubit.dart';
 import 'package:inventerization_4aas/cubit/user/user_cubit.dart';
 import 'package:inventerization_4aas/permission_manafer.dart';
@@ -15,6 +17,7 @@ import 'package:inventerization_4aas/repositories/cabinet_repository.dart';
 import 'package:inventerization_4aas/repositories/network_repository.dart';
 import 'package:inventerization_4aas/repositories/notification_repository.dart';
 import 'package:inventerization_4aas/repositories/notification_service.dart';
+import 'package:inventerization_4aas/repositories/printer_status_repository.dart';
 import 'package:inventerization_4aas/repositories/product_repository.dart';
 import 'package:inventerization_4aas/repositories/transfer_repository.dart';
 import 'package:inventerization_4aas/repositories/user_repository.dart';
@@ -28,7 +31,7 @@ void main() async {
   // Настройка window_manager только для desktop платформ
   if (!kIsWeb && (Platform.isWindows)) {
     await windowManager.ensureInitialized();
-    
+
     // Установка размера окна
     WindowOptions windowOptions = const WindowOptions(
       size: Size(540, 800),
@@ -72,6 +75,10 @@ void main() async {
         ),
         BlocProvider(
           create: (context) =>
+              TransferCountsCubit(transferRepository: TransferRepository()),
+        ),
+        BlocProvider(
+          create: (context) =>
               ProductCubit(productRepository: ProductRepository())
                 ..loadProducts(),
         ),
@@ -83,6 +90,11 @@ void main() async {
         BlocProvider(
           create: (context) =>
               NotificationCubit(repository: NotificationRepository()),
+        ),
+        BlocProvider(
+          create: (context) => PrinterStatusCubit(
+            printerStatusRepository: PrinterStatusRepository(),
+          ),
         ),
       ],
       child: MainApp(),

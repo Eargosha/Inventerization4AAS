@@ -88,6 +88,12 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    PrinterSettingsRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const PrinterSettingsScreen(),
+      );
+    },
   };
 }
 
@@ -344,4 +350,18 @@ class ObjectRouteArgs {
   String toString() {
     return 'ObjectRouteArgs{key: $key, product: $product}';
   }
+}
+
+/// generated route for
+/// [PrinterSettingsScreen]
+class PrinterSettingsRoute extends PageRouteInfo<void> {
+  const PrinterSettingsRoute({List<PageRouteInfo>? children})
+      : super(
+          PrinterSettingsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'PrinterSettingsRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }

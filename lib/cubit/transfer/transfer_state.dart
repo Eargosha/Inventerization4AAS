@@ -45,18 +45,6 @@ class TransferLoadSuccess extends TransferState {
   TransferLoadSuccess({required this.message, required this.transfers});
 }
 
-class TransferMonthCountUpdated extends TransferState {
-  final int month;
-  final int year;
-  final int count;
-
-  TransferMonthCountUpdated({
-    required this.month,
-    required this.year,
-    required this.count,
-  });
-}
-
 class TransferExcelExported extends TransferState {
   final List<int> fileBytes;
 

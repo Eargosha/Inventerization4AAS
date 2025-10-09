@@ -14,6 +14,8 @@ import 'package:inventerization_4aas/screens/widgets/app_bar.dart';
 import 'package:inventerization_4aas/screens/widgets/input_field_widget.dart';
 import 'package:inventerization_4aas/screens/widgets/main_button.dart';
 import 'package:inventerization_4aas/constants/theme/app_colors.dart';
+import 'package:inventerization_4aas/screens/widgets/selection_from_list_delegate.dart';
+import 'package:inventerization_4aas/utils/formatters.dart';
 
 @RoutePage()
 class CreateMovementScreen extends StatelessWidget {
@@ -36,6 +38,7 @@ class CreateMovementScreen extends StatelessWidget {
   // Параметры для редактирования
   final bool isEditing;
   final Transfer? transferToEdit;
+
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +93,7 @@ class _MovementFormState extends State<_MovementForm> {
   Product? selectedProduct;
   Cabinet? selectedFromWhere;
   Cabinet? selectedToWhere;
-  String? selectedTime;
+  String? selectedTime = formatDateTime(DateTime.now());
   String? selectedReason;
 
   // Переменная для хранения объекта Transfer при редактировании
@@ -100,6 +103,22 @@ class _MovementFormState extends State<_MovementForm> {
 
   // Для текстового поля "Причина"
   final _reasonController = TextEditingController();
+
+  List<String> fastTypeReasons = [
+    'Замена',
+    'Замена на новый',
+    'Замена на исправный',
+    'Ремонт',
+    'Сдача в ремонт',
+    'Сотрудник уволился',
+    'Перемещение на склад',
+    'Обновление',
+    'Собрали полный комплект',
+    'Утилизация',
+    'Списание',
+    'Неисправность',
+    'Передача другому сотруднику',
+  ];
 
   @override
   void initState() {
@@ -250,8 +269,6 @@ class _MovementFormState extends State<_MovementForm> {
             );
             // Переход на экран деталей обновленного перемещения
             context.router.push(MovementObjectRoute(transfer: state.transfer));
-            // Или pop(), если хотите вернуться назад
-            // context.router.pop();
           }
           if (state is TransferFailure) {
             // Эвойдим лишний сникБар от getlast_transfer_for_object.php
@@ -405,13 +422,35 @@ class _MovementFormState extends State<_MovementForm> {
               ),
               const SizedBox(height: 12),
               InputField(
+                selectedTitle: selectedReason,
+                leadingButton: IconButton(
+                  onPressed: () async {
+                    final value = await showSearch<String?>(
+                      context: context,
+                      delegate: SelectFromListDelegate(fastTypeReasons),
+                    );
+                    if (value != null) {
+                      setState(() {
+                        selectedReason = value;
+                      });
+                    }
+                  },
+                  icon: Icon(
+                    Icons.expand_more,
+                    color: Color.fromRGBO(96, 96, 96, 1),
+                    size: 25,
+                  ),
+                ),
                 placeholder: 'Причина',
-                initialValue: widget.isEditing ? widget.transferToEdit!.reason : '',
+                initialValue: widget.isEditing
+                    ? widget.transferToEdit!.reason
+                    : '',
                 onChanged: (value) {
                   setState(() {
                     selectedReason = value;
                   });
                 },
+                onTap: () {},
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Введите причину';
@@ -436,30 +475,32 @@ class _MovementFormState extends State<_MovementForm> {
                       author:
                           "${context.read<UserCubit>().currentUser!.lastName} ${context.read<UserCubit>().currentUser!.firstName} ${context.read<UserCubit>().currentUser!.patronymic}",
                     );
-                     if (widget.isEditing) {
+                    if (widget.isEditing) {
                       // Вызываем метод обновления
                       transferCubit.updateTransfer(transfer);
                       context.read<NotificationCubit>().sendNotification(
-                            title: 'Обновление перемещения',
-                            body:
-                                '${transfer.date} было зафиксировано обновление объекта с инвентарным номером ${transfer.inventoryItem} из кабинета ${transfer.fromWhere} в кабинет ${transfer.toWhere}, авторства ${transfer.author}',
-                            destinationRoles: ['fho', 'admin'],
-                          );
+                        title: 'Обновление перемещения',
+                        body:
+                            '${transfer.date} было зафиксировано обновление объекта с инвентарным номером ${transfer.inventoryItem} из кабинета ${transfer.fromWhere} в кабинет ${transfer.toWhere}, авторства ${transfer.author}',
+                        destinationRoles: ['fho', 'admin'],
+                      );
                       // Отправка уведомления при редактировании - решите, нужно ли
                       // context.read<NotificationCubit>().sendNotification(...);
                     } else {
                       // Вызываем метод создания
                       transferCubit.createTransfer(transfer);
                       context.read<NotificationCubit>().sendNotification(
-                            title: 'Новое перемещение',
-                            body:
-                                '${transfer.date} было зафиксировано новое перемещение объекта с инвентарным номером ${transfer.inventoryItem} из кабинета ${transfer.fromWhere} в кабинет ${transfer.toWhere}, авторства ${transfer.author}',
-                            destinationRoles: ['fho', 'admin'],
-                          );
+                        title: 'Новое перемещение',
+                        body:
+                            '${transfer.date} было зафиксировано новое перемещение объекта с инвентарным номером ${transfer.inventoryItem} из кабинета ${transfer.fromWhere} в кабинет ${transfer.toWhere}, авторства ${transfer.author}',
+                        destinationRoles: ['fho', 'admin'],
+                      );
                     }
                   }
                 },
-                title: widget.isEditing ? "Сохранить изменения" : "Добавить перемещение",
+                title: widget.isEditing
+                    ? "Сохранить изменения"
+                    : "Добавить перемещение",
               ),
               const SizedBox(height: 8),
               mainButton(

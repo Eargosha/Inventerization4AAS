@@ -12,4 +12,5 @@ abstract class AppColor {
   static const Color shadowColor = Color.fromRGBO(41, 32, 51, 0.25);
   static const Color attentionColor = Color.fromRGBO(231, 73, 73, 1);
   static const Color aproveColor = Color.fromRGBO(91, 231, 73, 1);
+  static const Color warningColor = Color.fromRGBO(231, 194, 73, 1);
 }

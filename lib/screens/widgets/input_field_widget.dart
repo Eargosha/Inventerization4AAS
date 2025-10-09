@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inventerization_4aas/constants/theme/app_colors.dart';
 import 'package:inventerization_4aas/constants/theme/app_text_styles.dart';
+import 'package:inventerization_4aas/utils/formatters.dart';
 
 class InputField extends StatefulWidget {
   final String placeholder;
@@ -12,6 +13,7 @@ class InputField extends StatefulWidget {
   final bool dropdownWithSearch;
   final bool date;
   final List<String>? dropdownItems;
+  final Widget? leadingButton;
   final String? initialValue;
   final String? selectedTitle;
   final FormFieldValidator<String>? validator;
@@ -22,6 +24,7 @@ class InputField extends StatefulWidget {
     this.obscureText = false,
     required this.onChanged,
     this.onTap,
+    this.leadingButton,
     this.search = false,
     this.dropdown = false,
     this.dropdownWithSearch = false,
@@ -38,18 +41,59 @@ class InputField extends StatefulWidget {
 
 class _InputFieldState extends State<InputField> {
   late TextEditingController _controller;
+  bool _isEditingInternally = false; // <-- новый флаг
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.initialValue);
+    _controller = TextEditingController(
+      text: widget.initialValue ?? widget.selectedTitle,
+    );
   }
+
+  // @override
+  // void didUpdateWidget(covariant InputField oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+
+  //   // Откладываем обновление текста, чтобы не нарушать build-фазу
+  //   if (oldWidget.selectedTitle != widget.selectedTitle) {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) {
+  //       if (mounted) {
+  //         _controller.text = widget.selectedTitle ?? widget.initialValue ?? '';
+  //       }
+  //     });
+  //   }
+
+  //   if (oldWidget.initialValue != widget.initialValue &&
+  //       widget.selectedTitle == null) {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) {
+  //       if (mounted) {
+  //         _controller.text = widget.initialValue ?? '';
+  //       }
+  //     });
+  //   }
+  // }
 
   @override
   void didUpdateWidget(covariant InputField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.initialValue != widget.initialValue) {
-      _controller.text = widget.initialValue ?? '';
+
+    // Только если текст меняется извне И пользователь не редактирует поле
+    if (oldWidget.selectedTitle != widget.selectedTitle ||
+        oldWidget.initialValue != widget.initialValue) {
+      final newText = widget.selectedTitle ?? widget.initialValue ?? '';
+
+      // Обновляем контроллер, только если текущий текст не совпадает
+      if (_controller.text != newText) {
+        _isEditingInternally = true;
+        _controller.text = newText;
+        // Сбрасываем флаг в следующем кадре
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _isEditingInternally = false;
+          }
+        });
+      }
     }
   }
 
@@ -70,7 +114,7 @@ class _InputFieldState extends State<InputField> {
           decoration: InputDecoration(
             filled: true,
             fillColor: const Color(0xFFF0F2F5),
-            hintText:widget. placeholder,
+            hintText: widget.placeholder,
             hintStyle: const TextStyle(color: Color(0xFF60758A), fontSize: 16),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -119,7 +163,12 @@ class _InputFieldState extends State<InputField> {
       return GestureDetector(
         onTap: widget.onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.only(
+            left: 16,
+            top: 14,
+            bottom: 14,
+            right: 12,
+          ),
           decoration: BoxDecoration(
             color: const Color(0xFFF0F2F5),
             borderRadius: BorderRadius.circular(8),
@@ -127,15 +176,20 @@ class _InputFieldState extends State<InputField> {
           child: Row(
             children: [
               Expanded(
-                child: widget.selectedTitle == null ? Text(
-                  widget.placeholder,
-                  style: const TextStyle(color: Color.fromRGBO(106, 107, 109, 1), fontSize: 16),
-                ) : Text(
-                  widget.selectedTitle!,
-                  style: AppTextStyle.style16w400,
-                ),
+                child: widget.selectedTitle == null
+                    ? Text(
+                        widget.placeholder,
+                        style: const TextStyle(
+                          color: Color.fromRGBO(106, 107, 109, 1),
+                          fontSize: 16,
+                        ),
+                      )
+                    : Text(
+                        widget.selectedTitle!,
+                        style: AppTextStyle.style16w400,
+                      ),
               ),
-              Icon(Icons.expand_more, color: Color.fromRGBO(96,96,96,1)),
+              Icon(Icons.expand_more, color: Color.fromRGBO(96, 96, 96, 1)),
             ],
           ),
         ),
@@ -158,8 +212,9 @@ class _InputFieldState extends State<InputField> {
             );
 
             if (selectedDate != null) {
-              final formattedDate =
-                  "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
+              // final formattedDate =
+              //     "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
+              final formattedDate = formatDateTime(selectedDate);
               _controller.text = formattedDate;
               widget.onChanged(formattedDate);
             }
@@ -202,10 +257,11 @@ class _InputFieldState extends State<InputField> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: TextFormField(
-        initialValue: widget.initialValue,
+        controller: _controller,
+        // initialValue: widget.initialValue,
         obscureText: widget.obscureText,
         onChanged: widget.onChanged,
-        validator: widget.validator, // <-- validator передаётся сюда
+        validator: widget.validator,
         decoration: InputDecoration(
           filled: true,
           fillColor: const Color(0xFFF0F2F5),
@@ -228,6 +284,7 @@ class _InputFieldState extends State<InputField> {
             vertical: 14,
           ),
           isDense: true,
+          suffixIcon: widget.leadingButton,
           prefixIcon: widget.search
               ? Padding(
                   padding: const EdgeInsets.only(left: 8.0),

@@ -12,6 +12,7 @@ import 'package:inventerization_4aas/router/route.dart';
 import 'package:inventerization_4aas/screens/widgets/filter_date.dart';
 import 'package:inventerization_4aas/screens/widgets/filter_dropdown.dart';
 import 'package:inventerization_4aas/screens/widgets/input_field_widget.dart';
+import 'package:inventerization_4aas/screens/widgets/main_button.dart';
 import 'package:inventerization_4aas/screens/widgets/movement_tile.dart';
 import 'package:inventerization_4aas/constants/theme/app_text_styles.dart';
 import 'package:path_provider/path_provider.dart';
@@ -39,6 +40,7 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
     });
   }
 
+  int? dayPickedForExportToExcel;
   late int monthNumber;
 
   @override
@@ -65,11 +67,14 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
           // )
           // mainButton(onPressed: () {}, title: 'Отчет')
           TextButton(
+            // onPressed: () {
+            //   context.read<TransferCubit>().exportTransfersToExcel(
+            //     month: monthNumber,
+            //     year: int.tryParse(widget.year)!,
+            //   );
+            // },
             onPressed: () {
-              context.read<TransferCubit>().exportTransfersToExcel(
-                month: monthNumber,
-                year: int.tryParse(widget.year)!,
-              );
+              _showExportOptions(context, monthNumber, widget.year);
             },
             child: Text(
               'Отчет',
@@ -81,6 +86,107 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
         ],
       ),
       body: buildMouth(context),
+    );
+  }
+
+  void _showExportOptions(
+    BuildContext context,
+    int monthNumber,
+    String yearStr,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 40),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Кнопка "За месяц"
+                ListTile(
+                  title: Text(
+                    'Сформировать отчёт за месяц',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle.style16w600.copyWith(
+                      color: AppColor.textPrimary,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context); // закрываем попап
+                    context.read<TransferCubit>().exportTransfersToExcel(
+                      month: monthNumber,
+                      year: int.tryParse(yearStr)!,
+                    );
+                  },
+                ),
+                Divider(height: 1),
+                // Кнопка "За дату"
+                ListTile(
+                  title: Text(
+                    'Сформировать отчёт за дату',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle.style16w600.copyWith(
+                      color: AppColor.textPrimary,
+                    ),
+                  ),
+                  onTap: () async {
+                    // Определяем границы месяца
+                    final DateTime firstDate = DateTime(
+                      int.parse(widget.year),
+                      monthNumber,
+                    );
+                    final DateTime lastDate = DateTime(
+                      int.parse(widget.year),
+                      monthNumber + 1,
+                    ).subtract(const Duration(days: 1));
+                    final DateTime? picked = await showDatePicker(
+                      context: context,
+                      firstDate: firstDate,
+                      lastDate: lastDate,
+                      builder: (context, child) {
+                        return Theme(
+                          data: ThemeData.light().copyWith(
+                            colorScheme: ColorScheme.light(
+                              primary: AppColor.accentColor,
+                            ),
+                          ),
+                          child: child!,
+                        );
+                      },
+                    );
+
+                    dayPickedForExportToExcel = picked!.day;
+
+                    Navigator.pop(context); // закрываем попап
+                    // Здесь можно открыть выбор даты или сразу вызвать экспорт за сегодня
+                    context.read<TransferCubit>().exportDailyTransfersToExcel(
+                      month: picked!.month,
+                      year: picked.year,
+                      day: picked.day,
+                    );
+                  },
+                ),
+                // Кнопка "Отмена"
+                ListTile(
+                  title: Text(
+                    'Отмена',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle.style16w600.copyWith(color: Colors.red),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -105,8 +211,9 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
     try {
       final savePath = await FilePicker.platform.saveFile(
         dialogTitle: 'Сохранить отчет по инвентаризации',
-        fileName:
-            'Отчет по инвентаризации 4ААС ${widget.month} ${widget.year}.xlsx',
+        fileName: dayPickedForExportToExcel == null
+            ? 'Отчет по инвентаризации 4ААС ${widget.month} ${widget.year}.xlsx'
+            : 'Отчет по инвентаризации 4ААС $dayPickedForExportToExcel ${widget.month} ${widget.year}.xlsx',
       );
 
       if (savePath != null) {
@@ -132,7 +239,9 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
       final tempDir = await getTemporaryDirectory();
       final file =
           await File(
-              '${tempDir.path}/Отчет по инвентаризации 4ААС ${widget.month} ${widget.year}.xlsx',
+              dayPickedForExportToExcel == null
+                  ? '${tempDir.path}/Отчет по инвентаризации 4ААС ${widget.month} ${widget.year}.xlsx'
+                  : '${tempDir.path}/Отчет по инвентаризации 4ААС $dayPickedForExportToExcel ${widget.month} ${widget.year}.xlsx',
             )
             ..createSync(recursive: true)
             ..writeAsBytesSync(bytes);
@@ -140,8 +249,9 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
       // Открываем диалог сохранения
       final params = SaveFileDialogParams(
         sourceFilePath: file.path,
-        fileName:
-            'Отчет по инвентаризации 4ААС ${widget.month} ${widget.year}.xlsx',
+        fileName: dayPickedForExportToExcel == null
+            ? 'Отчет по инвентаризации 4ААС ${widget.month} ${widget.year}.xlsx'
+            : 'Отчет по инвентаризации 4ААС $dayPickedForExportToExcel ${widget.month} ${widget.year}.xlsx',
       );
 
       final filePath = await FlutterFileDialog.saveFile(params: params);
@@ -186,7 +296,9 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
           if (date != null) {
             print('Выбранная дата: $date');
             context.read<TransferCubit>().loadTransfers({
-              'date': date.toString().split(' ')[0], // фильтр по дате
+              'month': monthNumber,
+              'year': widget.year,
+              'day': date.day,
             });
           }
         },
@@ -292,7 +404,7 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
                 vertical: 16,
               ),
               child: InputField(
-                placeholder: 'Поиск по названию, номерЫу',
+                placeholder: 'Поиск по названию, номеру',
                 obscureText: false,
                 onChanged: (text) {
                   // Фильтруем по inventory_item и name
@@ -365,9 +477,29 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
                               },
                             )
                           : Center(
-                              child: Text(
-                                'Нет данных',
-                                style: AppTextStyle.style20w400,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Нет данных, попробуйте',
+                                      style: AppTextStyle.style20w400,
+                                    ),
+                                    mainButton(
+                                      onPressed: () {
+                                        context
+                                            .read<TransferCubit>()
+                                            .loadTransfers({
+                                              'month': monthNumber,
+                                              'year': widget.year,
+                                            });
+                                      },
+                                      title: 'Обновить',
+                                      icon: Icon(Icons.repeat, color: AppColor.textInverse),
+                                    ),
+                                  ],
+                                ),
                               ),
                             )
                     : state is TransferLoading
@@ -375,9 +507,27 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
                     : state is TransferFailure
                     ? Center(child: Text(state.message))
                     : Center(
-                        child: Text(
-                          'Нет данных',
-                          style: AppTextStyle.style20w400,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Данное состояние не обработано, попробуйте',
+                                style: AppTextStyle.style16w600,
+                              ),
+                              mainButton(
+                                onPressed: () {
+                                  context.read<TransferCubit>().loadTransfers({
+                                    'month': monthNumber,
+                                    'year': widget.year,
+                                  });
+                                },
+                                title: 'Обновить',
+                                icon: Icon(Icons.repeat, color: AppColor.textInverse),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
               ),

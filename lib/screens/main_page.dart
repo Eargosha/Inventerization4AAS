@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventerization_4aas/cubit/notification/notification_cubit.dart';
 import 'package:inventerization_4aas/router/route.dart';
 import 'package:inventerization_4aas/screens/home_screen_pages/movement_page.dart';
+import 'package:inventerization_4aas/screens/home_screen_pages/printer_page.dart';
 import 'package:inventerization_4aas/screens/home_screen_pages/profile_page.dart';
 import 'package:inventerization_4aas/screens/home_screen_pages/scan_page.dart';
 import 'package:inventerization_4aas/screens/widgets/app_bar.dart';
@@ -22,7 +23,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
+  int _currentIndex = 1;
   late PageController _pageController;
   bool _isWindows = false;
 
@@ -61,11 +62,13 @@ class _MainScreenState extends State<MainScreen> {
     List<Widget> allPages = _isWindows
         ? [
             // Для Windows убираем страницу сканирования
+            PrinterScreen(),
             MovementScreen(),
             ProfileScreen(),
           ]
         : [
             // Для других платформ оставляем все страницы
+            PrinterScreen(),
             ScanScreen(),
             MovementScreen(),
             ProfileScreen(),
@@ -74,6 +77,7 @@ class _MainScreenState extends State<MainScreen> {
     List<BottomNavigationBarItem> bottomNavItems = _isWindows
         ? [
             // Для Windows убираем пункт сканирования
+            BottomNavigationBarItem(icon: Icon(Icons.print), label: "Печать"),
             BottomNavigationBarItem(
               icon: Icon(Icons.fire_truck),
               label: "Перемещения",
@@ -85,6 +89,7 @@ class _MainScreenState extends State<MainScreen> {
           ]
         : [
             // Для других платформ оставляем все пункты
+            BottomNavigationBarItem(icon: Icon(Icons.print), label: "Печать"),
             BottomNavigationBarItem(
               icon: Icon(Icons.barcode_reader),
               label: "Сканировать",
@@ -101,35 +106,34 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       appBar: invAppBar(
-        actions: _isWindows
-            ? _currentIndex == 0
-                  ? [
-                      IconButton(
-                        onPressed: () {
-                          context.router.push(CreateMovementRoute());
-                        },
-                        icon: Icon(Icons.add),
-                        tooltip: 'Создать перемещение',
-                      ),
-                    ]
-                  : [
-                      IconButton(
-                        onPressed: () {
-                          context.router.push(NotificationRoute());
-                        },
-                        icon: Badge(
-                          label: context.select(
-                            (NotificationCubit cubit) => cubit.unread.isNotEmpty
-                                ? Text(cubit.unread.length.toString())
-                                : null,
-                          ),
-                          child: Icon(Icons.notifications),
-                        ),
-                        tooltip: 'Просмотреть уведомления',
-                      ),
-                    ]
-            : _currentIndex != 1
-            ? [
+        actions: (() {
+          // Определяем, какая кнопка должна быть на текущей странице
+          if (_isWindows) {
+            // Windows: 0=Печать, 1=Перемещения, 2=Профиль
+            if (_currentIndex == 0) {
+              return [
+                IconButton(
+                  onPressed: () {
+                    context.router.push(PrinterSettingsRoute());
+                  },
+                  icon: Icon(Icons.settings),
+                  tooltip: 'Настройки принтера',
+                ),
+              ];
+            } else if (_currentIndex == 1) {
+              // Только на странице "Перемещения" — кнопка добавления
+              return [
+                IconButton(
+                  onPressed: () {
+                    context.router.push(CreateMovementRoute());
+                  },
+                  icon: Icon(Icons.add),
+                  tooltip: 'Создать перемещение',
+                ),
+              ];
+            } else {
+              // На всех остальных — уведомления
+              return [
                 IconButton(
                   onPressed: () {
                     context.router.push(NotificationRoute());
@@ -144,8 +148,24 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   tooltip: 'Просмотреть уведомления',
                 ),
-              ]
-            : [
+              ];
+            }
+          } else {
+            // Не-Windows: 0=Печать, 1=Сканирование, 2=Перемещения, 3=Профиль
+            if (_currentIndex == 0) {
+              return [
+                IconButton(
+                  onPressed: () {
+                    context.router.push(PrinterSettingsRoute());
+                  },
+                  icon: Icon(Icons.settings),
+                  tooltip: 'Настройки принтера',
+                ),
+              ];
+            }
+            else if (_currentIndex == 2) {
+              // Только на странице "Перемещения" — кнопка добавления
+              return [
                 IconButton(
                   onPressed: () {
                     context.router.push(CreateMovementRoute());
@@ -153,7 +173,28 @@ class _MainScreenState extends State<MainScreen> {
                   icon: Icon(Icons.add),
                   tooltip: 'Создать перемещение',
                 ),
-              ],
+              ];
+            } else {
+              // На всех остальных — уведомления
+              return [
+                IconButton(
+                  onPressed: () {
+                    context.router.push(NotificationRoute());
+                  },
+                  icon: Badge(
+                    label: context.select(
+                      (NotificationCubit cubit) => cubit.unread.isNotEmpty
+                          ? Text(cubit.unread.length.toString())
+                          : null,
+                    ),
+                    child: Icon(Icons.notifications),
+                  ),
+                  tooltip: 'Просмотреть уведомления',
+                ),
+              ];
+            }
+          }
+        })(),
       ),
       body: PageView(
         controller: _pageController,

@@ -98,9 +98,12 @@ class _MovementObjectScreenState extends State<MovementObjectScreen> {
               ),
               mainButton(
                 onPressed: () {
-                  showBottomSheet(context: context, builder: (context) {
-                    return _buildConfirmForm(context);
-                  });
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return _buildConfirmForm(context);
+                    },
+                  );
                 },
                 title: 'Удалить',
               ),
@@ -141,7 +144,7 @@ class _MovementObjectScreenState extends State<MovementObjectScreen> {
     );
   }
 
-    Widget _buildConfirmForm(BuildContext context) {
+  Widget _buildConfirmForm(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return SizedBox(
@@ -157,6 +160,7 @@ class _MovementObjectScreenState extends State<MovementObjectScreen> {
             onPressed: () {
               context.read<TransferCubit>().deleteTransfer(widget.transfer.id!);
               Navigator.of(context).pop();
+              context.router.pop();
             },
             title: "Да",
           ),

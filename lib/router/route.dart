@@ -5,6 +5,7 @@ import 'package:inventerization_4aas/models/product_model.dart';
 import 'package:inventerization_4aas/models/transfer_model.dart';
 import 'package:inventerization_4aas/screens/create_movement_page.dart';
 import 'package:inventerization_4aas/screens/home_screen_pages/month_detail_page.dart';
+import 'package:inventerization_4aas/screens/home_screen_pages/printer_settings_page.dart';
 import 'package:inventerization_4aas/screens/login_page.dart';
 import 'package:inventerization_4aas/screens/main_page.dart';
 import 'package:inventerization_4aas/screens/movement_object_page.dart';
@@ -27,5 +28,6 @@ class AppRouter extends _$AppRouter {
     AutoRoute(page: MovementObjectRoute.page),
     AutoRoute(page: ObjectRoute.page),
     AutoRoute(page: BarcodeScannerOverlayRoute.page),
+    AutoRoute(page: PrinterSettingsRoute.page),
   ];
 }

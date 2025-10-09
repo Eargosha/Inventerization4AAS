@@ -15,6 +15,19 @@ class _BarcodeScannerOverlayScreenState
     extends State<BarcodeScannerOverlayScreen> {
   String? _barcodeResult;
   bool _isScanning = true;
+  late MobileScannerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = MobileScannerController(); // Инициализируем
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose(); // Не забываем освободить ресурсы
+    super.dispose();
+  }
 
   void _onBarcodeScanned(BarcodeCapture barcodeCapture) {
     final barcode = barcodeCapture.barcodes.first;
@@ -39,15 +52,12 @@ class _BarcodeScannerOverlayScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
       body: Stack(
         children: [
           // Камера
           MobileScanner(
-            controller: MobileScannerController(),
+            controller: _controller, // ← наш контроллер
             fit: BoxFit.cover,
             onDetect: _onBarcodeScanned,
           ),
@@ -83,6 +93,29 @@ class _BarcodeScannerOverlayScreenState
                     fontWeight: FontWeight.w500,
                   ),
                   textAlign: TextAlign.center,
+                ),
+
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: FloatingActionButton(
+                      onPressed: () async {
+                        try {
+                          // Переключаем вспышку
+                          final wasEnabled = await _controller.toggleTorch();
+                          // `wasEnabled` — новое состояние (true = включена)
+                        } catch (e) {
+                          // Вспышка может быть недоступна (например, на эмуляторе)
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Вспышка недоступна: $e')),
+                          );
+                        }
+                      },
+                      child: const Icon(Icons.flash_on),
+                      backgroundColor: Colors.white,
+                    ),
+                  ),
                 ),
               ],
             ),

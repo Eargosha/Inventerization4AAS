@@ -1,13 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:inventerization_4aas/cubit/transfer/transfer_cubit.dart';
+import 'package:inventerization_4aas/cubit/transfer/transfer_counts_cubit.dart';
 import 'package:inventerization_4aas/router/route.dart';
 import 'package:inventerization_4aas/constants/theme/app_colors.dart';
 
-class MovementScreen extends StatelessWidget {
-  final int currentYear = DateTime.now().year;
+class MovementScreen extends StatefulWidget {
+  @override
+  State<MovementScreen> createState() => _MovementScreenState();
+}
 
+class _MovementScreenState extends State<MovementScreen>
+    with TickerProviderStateMixin {
   final List<String> months = [
     "Январь",
     "Февраль",
@@ -38,6 +42,17 @@ class MovementScreen extends StatelessWidget {
     "Декабрь": 12,
   };
 
+  final List<int> availableYears = [
+    DateTime.now().year - 2,
+    DateTime.now().year - 1,
+    DateTime.now().year,
+  ];
+
+  final int currentMonthIndex = DateTime.now().month - 1;
+
+  late TabController _tabController;
+  late ScrollController _scrollController;
+
   void _showMonthDetails(BuildContext context, String month, int year) {
     final monthNumber = _monthToNumber[month] ?? 1;
     final selectedDate = DateTime(year, monthNumber);
@@ -54,79 +69,113 @@ class MovementScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final cubit = context.read<TransferCubit>(); // можно и без read, но для вызова один раз — ок
-    final List<int> availableYears = [currentYear - 2, currentYear - 1, currentYear];
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _tabController = TabController(
+      initialIndex: 2,
+      length: availableYears.length,
+      vsync: this,
+    );
 
-    // Запрашиваем данные для всех месяцев и годов при первом открытии
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      for (var year in availableYears) {
-        for (var monthName in months) {
-          final monthNumber = _monthToNumber[monthName] ?? 1;
-          cubit.getTransfersCountByMonthAndYear(monthNumber, year);
-        }
-      }
+    // Загружаем данные счётчиков
+    Future.microtask(() {
+      if (!mounted) return;
+      context.read<TransferCountsCubit>().loadAllCounts(availableYears);
     });
 
-    return BlocBuilder<TransferCubit, TransferState>(
+    // Анимация скролла
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.minScrollExtent + (currentMonthIndex * 46.0),
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TransferCountsCubit, TransferCountsState>(
       builder: (context, state) {
-        // Получаем данные из кубита
-        final counts = cubit.countsByYearAndMonth;
+        Map<int, Map<int, int>> counts = {};
 
-        return DefaultTabController(
-          length: availableYears.length,
-          child: Scaffold(
-            body: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-                  child: TabBar(
-                    isScrollable: true,
-                    tabs: availableYears.map((year) => Tab(text: "$year")).toList(),
-                  ),
+        if (state is TransferCountsLoaded) {
+          counts = state.countsByYearAndMonth;
+        }
+        // Для TransferCountsLoading и TransferCountsInitial показываем нули
+        // Для TransferCountsFailure можно показать ошибку, но пока просто нули
+
+        return Scaffold(
+          body: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top,
                 ),
-                Expanded(
-                  child: TabBarView(
-                    children: availableYears.map((year) {
-                      return ListView.builder(
-                        itemCount: months.length,
-                        itemBuilder: (context, index) {
-                          final monthName = months[index];
-                          final monthNumber = _monthToNumber[monthName] ?? 1;
+                child: TabBar(
+                  controller: _tabController,
+                  isScrollable: true,
+                  tabs: availableYears
+                      .map((year) => Tab(text: "$year"))
+                      .toList(),
+                ),
+              ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: availableYears.map((year) {
+                    return ListView.builder(
+                      controller: _scrollController,
+                      itemCount: months.length,
+                      itemBuilder: (context, index) {
+                        final monthName = months[index];
+                        final monthNumber = _monthToNumber[monthName] ?? 1;
+                        final count = counts[year]?[monthNumber] ?? 0;
 
-                          // Получаем количество записей
-                          final count = counts[year]?[monthNumber] ?? 0;
+                        final selectedDate = DateTime(year, monthNumber);
+                        final now = DateTime.now();
+                        final isFuture =
+                            selectedDate.isAfter(now) &&
+                            selectedDate.year >= now.year;
 
-                          // Проверка на будущее
-                          final selectedDate = DateTime(year, monthNumber);
-                          final now = DateTime.now();
-                          final isFuture = selectedDate.isAfter(now) && selectedDate.year >= now.year;
-
-                          return ListTile(
-                            onTap: isFuture
-                                ? null
-                                : () => _showMonthDetails(context, monthName, year),
-                            leading: Container(
-                              decoration: BoxDecoration(
-                                color: AppColor.elementColor,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Icon(Icons.calendar_today),
-                              ),
+                        return ListTile(
+                          onTap: isFuture
+                              ? null
+                              : () => _showMonthDetails(
+                                  context,
+                                  monthName,
+                                  year,
+                                ),
+                          leading: Container(
+                            decoration: BoxDecoration(
+                              color: AppColor.elementColor,
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            title: Text(monthName),
-                            trailing: Text('$count'),
-                            enabled: !isFuture,
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(Icons.calendar_today),
+                            ),
+                          ),
+                          title: Text(monthName),
+                          trailing: Text('$count'),
+                          enabled: !isFuture,
+                        );
+                      },
+                    );
+                  }).toList(),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
