@@ -162,6 +162,8 @@ lib/
 - Dart 2.17+
 - Подключение к корпоративной сети
 
+[Серверная часть приложения Inventerization 4AAS](https://github.com/Eargosha/Inventerization4AAS_API) (Закрытый доступ)
+
 ### Установка
 ```bash
 git clone https://github.com/Eargosha/Inventerization4AAS.git
