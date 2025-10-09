@@ -25,16 +25,16 @@
 <tr>
 <td align="center">
 <img width="280" height="620" alt="Управление инвентарем" src="https://github.com/user-attachments/assets/0580079b-9188-4792-b912-caecafdaf749" />
-<br><em>Главный экран</em>
+<br><em>Сканер</em>
 </td>
 <td align="center">
-<img width="280" height="620" alt="Управление инвентарем 2" src="https://github.com/user-attachments/assets/484a0989-b08a-4921-8412-ce8473f4cb2a" />
-<br><em>Поиск объектов</em>
+<img width="280" height="620" alt="Управление инвентарем 3" src="https://github.com/user-attachments/assets/ad0697b5-99cb-4362-8b73-12da67a74069" />
+<br><em>Сканер 2</em>
 </td>
 </tr>
 <tr>
 <td align="center">
-<img width="280" height="620" alt="Управление инвентарем 3" src="https://github.com/user-attachments/assets/ad0697b5-99cb-4362-8b73-12da67a74069" />
+<img width="280" height="620" alt="Управление инвентарем 2" src="https://github.com/user-attachments/assets/484a0989-b08a-4921-8412-ce8473f4cb2a" />
 <br><em>Детали объекта</em>
 </td>
 </tr>
@@ -51,11 +51,11 @@
 <tr>
 <td align="center">
 <img width="280" height="620" alt="Управление перемещениям" src="https://github.com/user-attachments/assets/6bf41ff7-90f8-4ba1-b774-1753c3b309ef" />
-<br><em>Список перемещений</em>
+<br><em>Список перемещений в месяце</em>
 </td>
 <td align="center">
 <img width="280" height="620" alt="Управление перемещениям 2" src="https://github.com/user-attachments/assets/cebfacd8-01a7-475a-a252-ac82497863c6" />
-<br><em>Создание перемещения</em>
+<br><em>Список перемещений в годе</em>
 </td>
 </tr>
 </table>
