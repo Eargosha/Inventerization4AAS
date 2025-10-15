@@ -1,5 +1,11 @@
 abstract class AppConstants {
-  static const String baseAPIUrl = 'http://10.104.224.75/flutter_api/';
+
+  // Ip адрес сервера с бекендом на момент разработки приложения
+  static String printerIpAddr = '10.104.224.75';
+  static String baseAPIUrl = 'http://$printerIpAddr/flutter_api/';
+
+  // Дефолтный IP принтера (если не задан пользователем)
+  static const String defaultPrinterIp = '10.104.223.87'; // или другой
 
     // Значения по умолчанию для типов этикеток
   static const Map<String, Map<String, String>> labelTypeDefaults = {

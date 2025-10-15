@@ -131,6 +131,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
                     'Выберите тип этикетки и объект учета',
                     style: AppTextStyle.style16w600,
                   ),
+
                   // Row(
                   //   mainAxisAlignment: MainAxisAlignment.start,
                   //   children: [
@@ -176,77 +177,171 @@ class _PrinterScreenState extends State<PrinterScreen> {
                   //     ),
                   //   ],
                   // ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.start,
+                  //   children: [
+                  //     GestureDetector(
+                  //       onTap: () {
+                  //         final newValue = LabelType.regular;
+                  //         if (selectedLabelType != newValue) {
+                  //           setState(() => selectedLabelType = newValue);
+                  //           final defaults =
+                  //               AppConstants.labelTypeDefaults['Обычная']!;
+                  //           context.read<PrinterStatusCubit>().configurePrinter(
+                  //             labelLength: double.parse(defaults['length']!),
+                  //             labelWidth: double.parse(defaults['width']!),
+                  //             isFrontAntenna: false,
+                  //             antennaX: double.parse(defaults['antennaX']!),
+                  //             antennaY: double.parse(defaults['antennaY']!),
+                  //             powerWrite: double.parse(defaults['powerWrite']!),
+                  //             powerRead: double.parse(defaults['powerRead']!),
+                  //             pitchSize: double.parse(defaults['stepSize']!),
+                  //           );
+                  //         }
+                  //       },
+                  //       child: Row(
+                  //         mainAxisSize: MainAxisSize.min,
+                  //         children: [
+                  //           Text('Обычная', style: AppTextStyle.style16w400),
+                  //           Radio<LabelType>(
+                  //             value: LabelType.regular,
+                  //             groupValue: selectedLabelType,
+                  //             onChanged: (value) {
+                  //               // Этот onChanged всё равно будет вызван при клике на сам Radio
+                  //               // Но если вы используете GestureDetector — можно оставить его пустым
+                  //               // или удалить, если не нужно дублирование
+                  //             },
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //     GestureDetector(
+                  //       onTap: () {
+                  //         final newValue = LabelType.metallic;
+                  //         if (selectedLabelType != newValue) {
+                  //           setState(() => selectedLabelType = newValue);
+                  //           final metallic = AppConstants
+                  //               .labelTypeDefaults['Металлическая']!;
+                  //           context.read<PrinterStatusCubit>().configurePrinter(
+                  //             labelLength: double.parse(metallic['length']!),
+                  //             labelWidth: double.parse(metallic['width']!),
+                  //             isFrontAntenna: true,
+                  //             antennaX: double.parse(metallic['antennaX']!),
+                  //             antennaY: double.parse(metallic['antennaY']!),
+                  //             powerWrite: double.parse(metallic['powerWrite']!),
+                  //             powerRead: double.parse(metallic['powerRead']!),
+                  //             pitchSize: double.parse(metallic['stepSize']!),
+                  //           );
+                  //         }
+                  //       },
+                  //       child: Row(
+                  //         mainAxisSize: MainAxisSize.min,
+                  //         children: [
+                  //           Text(
+                  //             'Металлическая',
+                  //             style: AppTextStyle.style16w400,
+                  //           ),
+                  //           Radio<LabelType>(
+                  //             value: LabelType.metallic,
+                  //             groupValue: selectedLabelType,
+                  //             onChanged: (value) {},
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          final newValue = LabelType.regular;
-                          if (selectedLabelType != newValue) {
-                            setState(() => selectedLabelType = newValue);
-                            final defaults =
-                                AppConstants.labelTypeDefaults['Обычная']!;
-                            context.read<PrinterStatusCubit>().configurePrinter(
-                              labelLength: double.parse(defaults['length']!),
-                              labelWidth: double.parse(defaults['width']!),
-                              isFrontAntenna: false,
-                              antennaX: double.parse(defaults['antennaX']!),
-                              antennaY: double.parse(defaults['antennaY']!),
-                              powerWrite: double.parse(defaults['powerWrite']!),
-                              powerRead: double.parse(defaults['powerRead']!),
-                              pitchSize: double.parse(defaults['stepSize']!),
-                            );
-                          }
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('Обычная', style: AppTextStyle.style16w400),
-                            Radio<LabelType>(
-                              value: LabelType.regular,
-                              groupValue: selectedLabelType,
-                              onChanged: (value) {
-                                // Этот onChanged всё равно будет вызван при клике на сам Radio
-                                // Но если вы используете GestureDetector — можно оставить его пустым
-                                // или удалить, если не нужно дублирование
-                              },
-                            ),
-                          ],
-                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Обычная', style: AppTextStyle.style16w400),
+                          Radio<LabelType>(
+                            value: LabelType.regular,
+                            groupValue: selectedLabelType,
+                            onChanged: (value) {
+                              if (value != null) {
+                                setState(() => selectedLabelType = value);
+                                final defaults =
+                                    AppConstants.labelTypeDefaults['Обычная']!;
+                                context
+                                    .read<PrinterStatusCubit>()
+                                    .configurePrinter(
+                                      labelLength: double.parse(
+                                        defaults['length']!,
+                                      ),
+                                      labelWidth: double.parse(
+                                        defaults['width']!,
+                                      ),
+                                      isFrontAntenna: false,
+                                      antennaX: double.parse(
+                                        defaults['antennaX']!,
+                                      ),
+                                      antennaY: double.parse(
+                                        defaults['antennaY']!,
+                                      ),
+                                      powerWrite: double.parse(
+                                        defaults['powerWrite']!,
+                                      ),
+                                      powerRead: double.parse(
+                                        defaults['powerRead']!,
+                                      ),
+                                      pitchSize: double.parse(
+                                        defaults['stepSize']!,
+                                      ),
+                                    );
+                              }
+                            },
+                          ),
+                        ],
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          final newValue = LabelType.metallic;
-                          if (selectedLabelType != newValue) {
-                            setState(() => selectedLabelType = newValue);
-                            final metallic = AppConstants
-                                .labelTypeDefaults['Металлическая']!;
-                            context.read<PrinterStatusCubit>().configurePrinter(
-                              labelLength: double.parse(metallic['length']!),
-                              labelWidth: double.parse(metallic['width']!),
-                              isFrontAntenna: true,
-                              antennaX: double.parse(metallic['antennaX']!),
-                              antennaY: double.parse(metallic['antennaY']!),
-                              powerWrite: double.parse(metallic['powerWrite']!),
-                              powerRead: double.parse(metallic['powerRead']!),
-                              pitchSize: double.parse(metallic['stepSize']!),
-                            );
-                          }
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Металлическая',
-                              style: AppTextStyle.style16w400,
-                            ),
-                            Radio<LabelType>(
-                              value: LabelType.metallic,
-                              groupValue: selectedLabelType,
-                              onChanged: (value) {},
-                            ),
-                          ],
-                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Металлическая',
+                            style: AppTextStyle.style16w400,
+                          ),
+                          Radio<LabelType>(
+                            value: LabelType.metallic,
+                            groupValue: selectedLabelType,
+                            onChanged: (value) {
+                              if (value != null) {
+                                setState(() => selectedLabelType = value);
+                                final metallic = AppConstants
+                                    .labelTypeDefaults['Металлическая']!;
+                                context
+                                    .read<PrinterStatusCubit>()
+                                    .configurePrinter(
+                                      labelLength: double.parse(
+                                        metallic['length']!,
+                                      ),
+                                      labelWidth: double.parse(
+                                        metallic['width']!,
+                                      ),
+                                      isFrontAntenna: true,
+                                      antennaX: double.parse(
+                                        metallic['antennaX']!,
+                                      ),
+                                      antennaY: double.parse(
+                                        metallic['antennaY']!,
+                                      ),
+                                      powerWrite: double.parse(
+                                        metallic['powerWrite']!,
+                                      ),
+                                      powerRead: double.parse(
+                                        metallic['powerRead']!,
+                                      ),
+                                      pitchSize: double.parse(
+                                        metallic['stepSize']!,
+                                      ),
+                                    );
+                              }
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),

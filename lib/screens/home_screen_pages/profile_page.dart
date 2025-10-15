@@ -11,6 +11,7 @@ import 'package:inventerization_4aas/models/user_model.dart';
 import 'package:inventerization_4aas/cubit/user/user_cubit.dart';
 import 'package:inventerization_4aas/router/route.dart';
 import 'package:inventerization_4aas/screens/widgets/add_user_bottom_sheet.dart';
+import 'package:inventerization_4aas/screens/widgets/change_printer_ipaddress_bottom_sheet.dart';
 import 'package:inventerization_4aas/screens/widgets/delete_user_bottom_sheet.dart';
 import 'package:inventerization_4aas/screens/widgets/edit_user_bottom_sheet.dart';
 import 'package:inventerization_4aas/screens/widgets/main_button.dart';
@@ -31,15 +32,13 @@ class ProfileScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        final User? user = context.select((UserCubit cubit) => cubit.currentUser);
-        
+        final User? user = context.select(
+          (UserCubit cubit) => cubit.currentUser,
+        );
+
         // Проверка на null
         if (user == null) {
-          return Scaffold(
-            body: Center(
-              child: Text('Загрузка...'),
-            ),
-          );
+          return Scaffold(body: Center(child: Text('Загрузка...')));
         }
 
         return Scaffold(
@@ -203,6 +202,12 @@ class ProfileScreen extends StatelessWidget {
                 _showBottomSheet(context, DeleteUserBottomSheet());
               },
               title: 'Удалить пользователя',
+            ),
+            mainButton(
+              onPressed: () {
+                _showBottomSheet(context, ChangePrinterIpBottomSheet());
+              },
+              title: 'Измнеить ip адрес принтера',
             ),
           ],
         ),

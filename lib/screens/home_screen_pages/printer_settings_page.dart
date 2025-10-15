@@ -105,7 +105,7 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
             );
             // Убираем диалог загрузки
             Navigator.of(context).pop(); // закрываем индикатор
-    
+
             // Показываем успех
             if (!context.mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
@@ -114,7 +114,7 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                 backgroundColor: Colors.green,
               ),
             );
-    
+
             // Через короткую задержку — возвращаемся назад
             Future.delayed(const Duration(milliseconds: 800), () {
               if (context.mounted) {
@@ -124,7 +124,7 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
           } else if (state is PrinterConfigurationFailure) {
             // Убираем диалог загрузки
             Navigator.of(context).pop();
-    
+
             // Показываем ошибку
             if (!context.mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
@@ -137,7 +137,40 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: invAppBar(title: 'Настройки печати'),
+            appBar: invAppBar(
+              title: 'Настройки печати',
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('IP принтера'),
+                          content: Text(
+                            'Установку ip принтера производят администраторы со своих устройств одновременно для всех пользователей',
+                          ), 
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Закрывает диалог
+                              },
+                              child: Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Text(
+                    'Ip принтера',
+                    style: AppTextStyle.style14w600.copyWith(
+                      color: AppColor.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -285,7 +318,7 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                               style: AppTextStyle.style22w700,
                               textAlign: TextAlign.left,
                             ),
-                  
+
                             Text(
                               'Положение антенны',
                               style: AppTextStyle.style16w600,
@@ -301,7 +334,7 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                                       print(
                                         'Состояние чекбокса сейчас: $selectedAntennaPlacement',
                                       );
-                  
+
                                       selectedAntennaPlacement = newb;
                                     });
                                   },
@@ -488,41 +521,52 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                               ],
                             ),
                             mainButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              // Отправляем данные в кубит
-                              context
-                                  .read<PrinterStatusCubit>()
-                                  .configurePrinter(
-                                    labelLength: double.parse(_lengthValue!),
-                                    labelWidth: double.parse(_widthValue!),
-                                    isFrontAntenna: selectedAntennaPlacement,
-                                    antennaX: double.parse(_antennaXValue!),
-                                    antennaY: double.parse(_antennaYValue!),
-                                    powerWrite: double.parse(_powerWriteValue!),
-                                    powerRead: double.parse(_powerReadValue!),
-                                    pitchSize: double.parse(_stepSizeValue!),
-                                  );
-                  
-                              // Логгирование можно оставить, но не обязательно
-                              final data = {
-                                'labelType': selectedLabelType,
-                                'length': double.parse(_lengthValue!),
-                                'width': double.parse(_widthValue!),
-                                'antennaX': double.parse(_antennaXValue!),
-                                'antennaY': double.parse(_antennaYValue!),
-                                'powerWrite': double.parse(_powerWriteValue!),
-                                'powerRead': double.parse(_powerReadValue!),
-                                'stepSize': double.parse(_stepSizeValue!),
-                                'antennaPlacement': selectedAntennaPlacement
-                                    ? 'переднее'
-                                    : 'нормальное',
-                              };
-                              print('Данные для отправки: $data');
-                            }
-                          },
-                          title: 'Применить настройки',
-                        ),
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  // Отправляем данные в кубит
+                                  context
+                                      .read<PrinterStatusCubit>()
+                                      .configurePrinter(
+                                        labelLength: double.parse(
+                                          _lengthValue!,
+                                        ),
+                                        labelWidth: double.parse(_widthValue!),
+                                        isFrontAntenna:
+                                            selectedAntennaPlacement,
+                                        antennaX: double.parse(_antennaXValue!),
+                                        antennaY: double.parse(_antennaYValue!),
+                                        powerWrite: double.parse(
+                                          _powerWriteValue!,
+                                        ),
+                                        powerRead: double.parse(
+                                          _powerReadValue!,
+                                        ),
+                                        pitchSize: double.parse(
+                                          _stepSizeValue!,
+                                        ),
+                                      );
+
+                                  // Логгирование можно оставить, но не обязательно
+                                  final data = {
+                                    'labelType': selectedLabelType,
+                                    'length': double.parse(_lengthValue!),
+                                    'width': double.parse(_widthValue!),
+                                    'antennaX': double.parse(_antennaXValue!),
+                                    'antennaY': double.parse(_antennaYValue!),
+                                    'powerWrite': double.parse(
+                                      _powerWriteValue!,
+                                    ),
+                                    'powerRead': double.parse(_powerReadValue!),
+                                    'stepSize': double.parse(_stepSizeValue!),
+                                    'antennaPlacement': selectedAntennaPlacement
+                                        ? 'переднее'
+                                        : 'нормальное',
+                                  };
+                                  print('Данные для отправки: $data');
+                                }
+                              },
+                              title: 'Применить настройки',
+                            ),
                           ],
                         ),
                       ),
