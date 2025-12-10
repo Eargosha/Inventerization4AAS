@@ -72,6 +72,18 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    MovementRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: MovementScreen(),
+      );
+    },
+    MovementsHistoryRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MovementsHistoryScreen(),
+      );
+    },
     NotificationRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -299,6 +311,34 @@ class MovementObjectRouteArgs {
   String toString() {
     return 'MovementObjectRouteArgs{key: $key, transfer: $transfer}';
   }
+}
+
+/// generated route for
+/// [MovementScreen]
+class MovementRoute extends PageRouteInfo<void> {
+  const MovementRoute({List<PageRouteInfo>? children})
+      : super(
+          MovementRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MovementRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MovementsHistoryScreen]
+class MovementsHistoryRoute extends PageRouteInfo<void> {
+  const MovementsHistoryRoute({List<PageRouteInfo>? children})
+      : super(
+          MovementsHistoryRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MovementsHistoryRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

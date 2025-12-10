@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventerization_4aas/cubit/transfer/transfer_counts_cubit.dart';
 import 'package:inventerization_4aas/router/route.dart';
 import 'package:inventerization_4aas/constants/theme/app_colors.dart';
+import 'package:inventerization_4aas/screens/widgets/app_bar.dart';
 
+@RoutePage()
 class MovementScreen extends StatefulWidget {
   @override
   State<MovementScreen> createState() => _MovementScreenState();
@@ -88,7 +90,8 @@ class _MovementScreenState extends State<MovementScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted && _scrollController.hasClients) {
         _scrollController.animateTo(
-          _scrollController.position.minScrollExtent + (currentMonthIndex * 46.0),
+          _scrollController.position.minScrollExtent +
+              (currentMonthIndex * 46.0),
           duration: Duration(milliseconds: 300),
           curve: Curves.easeInOut,
         );
@@ -116,6 +119,17 @@ class _MovementScreenState extends State<MovementScreen>
         // Для TransferCountsFailure можно показать ошибку, но пока просто нули
 
         return Scaffold(
+          appBar: invAppBar(
+            actions: [
+              IconButton(
+                onPressed: () {
+                  context.router.push(CreateMovementRoute());
+                },
+                icon: Icon(Icons.add),
+                tooltip: 'Создать перемещение',
+              ),
+            ],
+          ),
           body: Column(
             children: [
               Container(
@@ -151,11 +165,8 @@ class _MovementScreenState extends State<MovementScreen>
                         return ListTile(
                           onTap: isFuture
                               ? null
-                              : () => _showMonthDetails(
-                                  context,
-                                  monthName,
-                                  year,
-                                ),
+                              : () =>
+                                    _showMonthDetails(context, monthName, year),
                           leading: Container(
                             decoration: BoxDecoration(
                               color: AppColor.elementColor,

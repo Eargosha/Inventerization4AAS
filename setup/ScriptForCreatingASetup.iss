@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Ивентаризация4ААС"
-#define MyAppVersion "0.7"
+#define MyAppVersion "0.88"
 #define MyAppExeName "inventerization_4aas.exe"
 
 [Setup]

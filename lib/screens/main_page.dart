@@ -7,9 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventerization_4aas/cubit/notification/notification_cubit.dart';
 import 'package:inventerization_4aas/router/route.dart';
 import 'package:inventerization_4aas/screens/home_screen_pages/movement_page.dart';
+import 'package:inventerization_4aas/screens/home_screen_pages/movements_history_page.dart';
 import 'package:inventerization_4aas/screens/home_screen_pages/printer_page.dart';
 import 'package:inventerization_4aas/screens/home_screen_pages/profile_page.dart';
 import 'package:inventerization_4aas/screens/home_screen_pages/scan_page.dart';
+import 'package:inventerization_4aas/screens/movement_object_page.dart';
 import 'package:inventerization_4aas/screens/widgets/app_bar.dart';
 import 'package:inventerization_4aas/constants/theme/app_colors.dart';
 import 'package:inventerization_4aas/constants/theme/app_text_styles.dart';
@@ -63,14 +65,14 @@ class _MainScreenState extends State<MainScreen> {
         ? [
             // Для Windows убираем страницу сканирования
             PrinterScreen(),
-            MovementScreen(),
+            MovementsHistoryScreen(),
             ProfileScreen(),
           ]
         : [
             // Для других платформ оставляем все страницы
             PrinterScreen(),
             ScanScreen(),
-            MovementScreen(),
+            MovementsHistoryScreen(),
             ProfileScreen(),
           ];
 
@@ -106,6 +108,33 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       appBar: invAppBar(
+        // title: (() {
+        //   // Определяем, какая строка должна быть на текущей странице
+        //   if (_isWindows) {
+        //     // Windows: 0=Печать, 1=Перемещения, 2=Профиль
+        //     if (_currentIndex == 1) {
+        //       return "История перемещений";
+        //     } else {
+        //       // На всех остальных — уведомления
+        //       return null;
+        //     }
+        //   } else {
+        //     // Не-Windows: 0=Печать, 1=Сканирование, 2=Перемещения, 3=Профиль
+        //     if (_currentIndex == 2) {
+        //       return "История перемещений";
+        //     } else {
+        //       // На всех остальных — уведомления
+        //       return null;
+        //     }
+        //   }
+        // })(),
+        leading: IconButton(
+          onPressed: () {
+            context.router.push(CreateMovementRoute());
+          },
+          icon: Icon(Icons.add),
+          tooltip: 'Создать перемещение',
+        ),
         actions: (() {
           // Определяем, какая кнопка должна быть на текущей странице
           if (_isWindows) {
@@ -123,12 +152,23 @@ class _MainScreenState extends State<MainScreen> {
             } else if (_currentIndex == 1) {
               // Только на странице "Перемещения" — кнопка добавления
               return [
-                IconButton(
+                // IconButton(
+                //   onPressed: () {
+                //     context.router.push(CreateMovementRoute());
+                //   },
+                //   icon: Icon(Icons.add),
+                //   tooltip: 'Создать перемещение',
+                // ),
+                TextButton(
                   onPressed: () {
-                    context.router.push(CreateMovementRoute());
+                    context.router.push(MovementRoute());
                   },
-                  icon: Icon(Icons.add),
-                  tooltip: 'Создать перемещение',
+                  child: Text(
+                    'Детально',
+                    style: AppTextStyle.style16w600.copyWith(
+                      color: AppColor.textPrimary,
+                    ),
+                  ),
                 ),
               ];
             } else {
@@ -162,16 +202,26 @@ class _MainScreenState extends State<MainScreen> {
                   tooltip: 'Настройки принтера',
                 ),
               ];
-            }
-            else if (_currentIndex == 2) {
+            } else if (_currentIndex == 2) {
               // Только на странице "Перемещения" — кнопка добавления
               return [
-                IconButton(
+                // IconButton(
+                //   onPressed: () {
+                //     context.router.push(CreateMovementRoute());
+                //   },
+                //   icon: Icon(Icons.add),
+                //   tooltip: 'Создать перемещение',
+                // ),
+                TextButton(
                   onPressed: () {
-                    context.router.push(CreateMovementRoute());
+                    // Пустая функция как по требованию
                   },
-                  icon: Icon(Icons.add),
-                  tooltip: 'Создать перемещение',
+                  child: Text(
+                    'Детально',
+                    style: AppTextStyle.style16w600.copyWith(
+                      color: AppColor.textPrimary,
+                    ),
+                  ),
                 ),
               ];
             } else {
