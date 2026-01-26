@@ -1,7 +1,7 @@
 name: inventerization_4aas
 description: "Inventerization in 4AAS"
 publish_to: 'none'
-version: 0.8.7
+version: 0.8.9
 
 environment:
   sdk: ^3.8.1
@@ -29,6 +29,9 @@ dependencies:
   flutter_file_dialog: ^3.0.1
   window_manager: ^0.5.1
   file_picker: ^10.2.0
+  package_info_plus: ^9.0.0
+  version: ^3.0.0
+  open_filex: ^4.7.0
 
 flutter_launcher_icons:
   android: "ic_launcher"

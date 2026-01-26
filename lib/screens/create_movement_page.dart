@@ -211,7 +211,7 @@ class _MovementFormState extends State<_MovementForm> {
 
   // Метод для загрузки последнего места хранения
   Future<void> _loadLastTransferLocation() async {
-    print('[==+==] Пытаемся найти Откуда');
+    // print('[==+==] Пытаемся найти Откуда');
     if (selectedProduct == null) return;
 
     final transferCubit = context.read<TransferCubit>();
@@ -340,7 +340,7 @@ class _MovementFormState extends State<_MovementForm> {
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              print('VALIDATOR WORKSSSSSSSSSSSSSSSS');
+                              // print('VALIDATOR WORKSSSSSSSSSSSSSSSS');
                               return 'Пожалуйста, выберите объект';
                             }
                             return null;
@@ -481,18 +481,18 @@ class _MovementFormState extends State<_MovementForm> {
                       context.read<NotificationCubit>().sendNotification(
                         title: 'Обновление перемещения',
                         body:
-                            '${transfer.date} было зафиксировано обновление объекта с инвентарным номером ${transfer.inventoryItem} из кабинета ${transfer.fromWhere} в кабинет ${transfer.toWhere}, авторства ${transfer.author}',
+                            '${transfer.date} было зафиксировано обновление объекта ${transfer.name} с инвентарным номером ${transfer.inventoryItem} из кабинета ${transfer.fromWhere} в кабинет ${transfer.toWhere}, авторства ${transfer.author} по причине - ${selectedReason}',
                         destinationRoles: ['fho', 'admin'],
                       );
-                      // Отправка уведомления при редактировании - решите, нужно ли
-                      // context.read<NotificationCubit>().sendNotification(...);
+ 
+                       
                     } else {
                       // Вызываем метод создания
                       transferCubit.createTransfer(transfer);
                       context.read<NotificationCubit>().sendNotification(
                         title: 'Новое перемещение',
                         body:
-                            '${transfer.date} было зафиксировано новое перемещение объекта с инвентарным номером ${transfer.inventoryItem} из кабинета ${transfer.fromWhere} в кабинет ${transfer.toWhere}, авторства ${transfer.author}',
+                            '${transfer.date} было зафиксировано новое перемещение объекта ${transfer.name} с инвентарным номером ${transfer.inventoryItem} из кабинета ${transfer.fromWhere} в кабинет ${transfer.toWhere}, авторства ${transfer.author} по причине - ${selectedReason}',
                         destinationRoles: ['fho', 'admin'],
                       );
                     }

@@ -60,7 +60,7 @@ class _MovementsHistoryScreenState extends State<MovementsHistoryScreen> {
         title: 'Дата',
         onChanged: (date) {
           if (date != null) {
-            print('Выбранная дата: $date');
+            // print('Выбранная дата: $date');
             context.read<TransferCubit>().loadTransfers({
               'month': date.month,
               'year': date.year,
@@ -93,7 +93,7 @@ class _MovementsHistoryScreenState extends State<MovementsHistoryScreen> {
                     'Из кабинета ',
                     '',
                   );
-                  print('[==+==] Выбрали $cabinetNumber');
+                  // print('[==+==] Выбрали $cabinetNumber');
                   context.read<TransferCubit>().loadTransfers({
                     'from_where': cabinetNumber,
                     'order_by_date_desc': true,
@@ -131,7 +131,7 @@ class _MovementsHistoryScreenState extends State<MovementsHistoryScreen> {
                     'В кабинет ',
                     '',
                   );
-                  print('[==+==] Выбрали $cabinetNumber');
+                  // print('[==+==] Выбрали $cabinetNumber');
                   context.read<TransferCubit>().loadTransfers({
                     'to_where': cabinetNumber,
                     'order_by_date_desc': true,

@@ -562,7 +562,7 @@ class _PrinterSettingsScreenState extends State<PrinterSettingsScreen> {
                                         ? 'переднее'
                                         : 'нормальное',
                                   };
-                                  print('Данные для отправки: $data');
+                                  // print('Данные для отправки: $data');
                                 }
                               },
                               title: 'Применить настройки',

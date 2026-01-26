@@ -18,7 +18,7 @@ abstract class AppConstants {
       'powerRead': '13',
       'offset': '0',
       'stepSize': '38.375',
-      'selectedAntennaPlacement': 'false',
+      'selectedAntennaPlacement': 'true',
     },
     'Металлическая': {
       'length': '30',

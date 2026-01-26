@@ -33,7 +33,7 @@ class NotificationRepository {
         );
       }
 
-      print('Ответ от сервера (уведомления): $jsonMap');
+      // print('Ответ от сервера (уведомления): $jsonMap');
 
       // Парсинг общего ответа через ApiResponse.fromJson
       final apiResponse = ApiResponse.fromJson(jsonMap);
@@ -59,8 +59,8 @@ class NotificationRepository {
       // Если данные не являются списком или ошибка
       return apiResponse;
     } catch (e, stackTrace) {
-      print('Произошла ошибка при загрузке уведомлений: $e');
-      print('Стек вызовов: $stackTrace');
+      // print('Произошла ошибка при загрузке уведомлений: $e');
+      // print('Стек вызовов: $stackTrace');
       return ApiResponse(success: false, message: 'Внутренняя ошибка: $e');
     }
   }
@@ -95,7 +95,7 @@ class NotificationRepository {
         );
       }
 
-      print('Ответ при отметке как прочитанное: $jsonMap');
+      // print('Ответ при отметке как прочитанное: $jsonMap');
 
       try {
         return ApiResponse.fromJson(jsonMap);
@@ -106,8 +106,8 @@ class NotificationRepository {
         );
       }
     } catch (e, stackTrace) {
-      print('Ошибка при отметке уведомления как прочитанного: $e');
-      print('Стек вызовов: $stackTrace');
+      // print('Ошибка при отметке уведомления как прочитанного: $e');
+      // print('Стек вызовов: $stackTrace');
       return ApiResponse(success: false, message: 'Сетевая ошибка: $e');
     }
   }
@@ -149,7 +149,7 @@ class NotificationRepository {
         );
       }
 
-      print('Ответ при отправке уведомления: $jsonMap');
+      // print('Ответ при отправке уведомления: $jsonMap');
 
       try {
         return ApiResponse.fromJson(jsonMap);
@@ -160,8 +160,8 @@ class NotificationRepository {
         );
       }
     } catch (e, stackTrace) {
-      print('Ошибка при отправке уведомления: $e');
-      print('Стек вызовов: $stackTrace');
+      // print('Ошибка при отправке уведомления: $e');
+      // print('Стек вызовов: $stackTrace');
       return ApiResponse(success: false, message: 'Сетевая ошибка: $e');
     }
   }

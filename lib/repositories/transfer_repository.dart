@@ -16,12 +16,12 @@ class TransferRepository {
       // Заголовки запроса
       final headers = {'Content-Type': 'application/json'};
 
-      print(transfer.name);
+      // print(transfer.name);
 
       // Тело запроса
       final body = json.encode(transfer.toJson());
 
-      print(body);
+      // print(body);
 
       // Выполнение POST-запроса
       final response = await http.post(url, headers: headers, body: body);
@@ -45,7 +45,7 @@ class TransferRepository {
         );
       }
 
-      print('Ответ от сервера: $jsonMap');
+      // print('Ответ от сервера: $jsonMap');
 
       // Парсинг ответа в объект ApiResponse
       try {
@@ -58,8 +58,8 @@ class TransferRepository {
       }
     } catch (e, stackTrace) {
       // Ловим любые исключения и возвращаем их как часть ответа
-      print('Произошла ошибка при создании перемещения: $e');
-      print('Стек вызовов: $stackTrace');
+      // print('Произошла ошибка при создании перемещения: $e');
+      // print('Стек вызовов: $stackTrace');
       return ApiResponse(success: false, message: 'Внутренняя ошибка: $e');
     }
   }
@@ -100,8 +100,8 @@ class TransferRepository {
     final url = Uri.parse('${AppConstants.baseAPIUrl}transfer/load.php');
 
     try {
-      print("[==+==] Грузим Transfers с фильтрами:");
-      print(filters);
+      // print("[==+==] Грузим Transfers с фильтрами:");
+      // print(filters);
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -114,10 +114,10 @@ class TransferRepository {
           message: 'Ошибка HTTP: ${response.statusCode}',
         );
       }
-      print(
-        "[==+==] Получили результат: " + json.decode(response.body)['message'],
-      );
-      print(response.body);
+      // print(
+      //   "[==+==] Получили результат: " + json.decode(response.body)['message'],
+      // );
+      // print(response.body);
 
       final jsonMap = json.decode(response.body);
       return ApiResponse.fromJson(jsonMap);

@@ -11,6 +11,7 @@ import 'package:inventerization_4aas/cubit/printer/printer_cubit.dart';
 import 'package:inventerization_4aas/cubit/product/product_cubit.dart';
 import 'package:inventerization_4aas/cubit/transfer/transfer_counts_cubit.dart';
 import 'package:inventerization_4aas/cubit/transfer/transfer_cubit.dart';
+import 'package:inventerization_4aas/cubit/update/update_cubit.dart';
 import 'package:inventerization_4aas/cubit/user/user_cubit.dart';
 import 'package:inventerization_4aas/permission_manafer.dart';
 import 'package:inventerization_4aas/repositories/cabinet_repository.dart';
@@ -20,9 +21,11 @@ import 'package:inventerization_4aas/repositories/notification_service.dart';
 import 'package:inventerization_4aas/repositories/printer_status_repository.dart';
 import 'package:inventerization_4aas/repositories/product_repository.dart';
 import 'package:inventerization_4aas/repositories/transfer_repository.dart';
+import 'package:inventerization_4aas/repositories/update_repository.dart';
 import 'package:inventerization_4aas/repositories/user_repository.dart';
 import 'package:inventerization_4aas/router/route.dart';
 import 'package:inventerization_4aas/constants/theme/app_colors.dart';
+import 'package:inventerization_4aas/utils/update_dialog_helper.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -95,6 +98,9 @@ void main() async {
           create: (context) => PrinterStatusCubit(
             printerStatusRepository: PrinterStatusRepository(),
           ),
+        ),
+        BlocProvider(
+          create: (context) => UpdateCubit(repository: UpdateRepository()),
         ),
       ],
       child: MainApp(),
@@ -174,6 +180,10 @@ class NetworkRequiredApp extends StatelessWidget {
                               repository: NotificationRepository(),
                             ),
                           ),
+                          BlocProvider(
+                            create: (context) =>
+                                UpdateCubit(repository: UpdateRepository()),
+                          ),
                         ],
                         child: MainApp(),
                       ),
@@ -199,7 +209,6 @@ class MainApp extends StatelessWidget {
   MainApp({super.key});
 
   final _appRouter = AppRouter();
-
   final ThemeData _themeData = ThemeData(
     scaffoldBackgroundColor: AppColor.backgroundColor,
     appBarTheme: const AppBarTheme(backgroundColor: AppColor.backgroundColor),
@@ -211,6 +220,27 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: _appRouter.config(),
       theme: _themeData,
+
+      builder: (context, child) {
+        // Отложенный вызов после первого фрейма
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.read<UpdateCubit>().state is UpdateInitial) {
+            context.read<UpdateCubit>().checkForUpdate();
+          }
+        });
+        return MultiBlocListener(
+          listeners: [
+            BlocListener<UpdateCubit, UpdateState>(
+              listener: (context, state) {
+                if (state is UpdateAvailable && context.mounted) {
+                  showUpdateDialogIfNeeded(context, state.updateInfo);
+                }
+              },
+            ),
+          ],
+          child: child!,
+        );
+      },
     );
   }
 }

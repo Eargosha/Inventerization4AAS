@@ -76,8 +76,8 @@ class PrinterStatusRepository {
       //   );
       // }
     } catch (e, stackTrace) {
-      print('Ошибка при отправке печати: $e');
-      print('Стек вызовов: $stackTrace');
+      // print('Ошибка при отправке печати: $e');
+      // print('Стек вызовов: $stackTrace');
       return ApiResponse(success: false, message: 'Сетевая ошибка: $e');
     }
   }
@@ -102,8 +102,8 @@ class PrinterStatusRepository {
       'antenna-x=${antennaX}&antenna-y=${antennaY}&power-write=${powerWrite}&power-read=${powerRead}&pitch-size=${pitchSize}',
     );
 
-    print('URL 1: $uri1');
-    print('URL 2: $uri2');
+    // print('URL 1: $uri1');
+    // print('URL 2: $uri2');
 
     try {
       final response1 = await http.post(
@@ -171,11 +171,11 @@ class PrinterStatusRepository {
         success: true,
         message:
             message ??
-            'Конфигурация применена успешно (сервер не вернул структурированный ответ)',
+            'Конфигурация применена успешно, можно печатать',
       );
     } catch (e, stackTrace) {
-      print('Сетевая ошибка при конфигурации принтера: $e');
-      print('Стек: $stackTrace');
+      // print('Сетевая ошибка при конфигурации принтера: $e');
+      // print('Стек: $stackTrace');
       return ApiResponse(success: false, message: 'Сетевая ошибка: $e');
     }
   }
@@ -295,7 +295,7 @@ class PrinterStatusRepository {
         );
       }
 
-      print('Ответ от сервера: $jsonMap');
+      // print('Ответ от сервера: $jsonMap');
 
       try {
         return ApiResponse.fromJson(jsonMap);
@@ -306,8 +306,8 @@ class PrinterStatusRepository {
         );
       }
     } catch (e, stackTrace) {
-      print('Произошла ошибка при загрузке товаров: $e');
-      print('Стек вызовов: $stackTrace');
+      // print('Произошла ошибка при загрузке товаров: $e');
+      // print('Стек вызовов: $stackTrace');
       return ApiResponse(success: false, message: 'Внутренняя ошибка: $e');
     }
   }

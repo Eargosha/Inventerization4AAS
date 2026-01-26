@@ -15,7 +15,7 @@ class NetworkChecker {
   Future<bool> isDeviceInCorrectSubnet() async {
     try {
       final ip = await _networkInfo.getWifiIP(); // Работает и на Wi-Fi, и на Ethernet
-      print('Текущий IP устройства: $ip');
+      // print('Текущий IP устройства: $ip');
 
       if (ip == null || ip.isEmpty) {
         return false;
@@ -23,7 +23,7 @@ class NetworkChecker {
 
       return ip.startsWith(ipPrefix);
     } catch (e) {
-      print('Ошибка при получении IP: $e');
+      // print('Ошибка при получении IP: $e');
       return false;
     }
   }
@@ -34,10 +34,10 @@ class NetworkChecker {
       final response = await http.get(Uri.parse('${AppConstants.baseAPIUrl}/ping.php'))
           .timeout(timeout);
 
-      print('Ответ от сервера: ${response.statusCode}');
+      // print('Ответ от сервера: ${response.statusCode}');
       return response.statusCode == 200;
     } catch (e) {
-      print('Сервер недоступен: $e');
+      // print('Сервер недоступен: $e');
       return false;
     }
   }

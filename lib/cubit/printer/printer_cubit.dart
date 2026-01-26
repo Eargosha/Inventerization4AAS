@@ -44,7 +44,7 @@ class PrinterStatusCubit extends Cubit<PrinterStatusState> {
         final String? status =
             response.message; // "ONLINE", "OFFLINE", "UNKNOWN"
 
-        print("Получили такой статус принтера $status");
+        // print("Получили такой статус принтера $status");
 
         final bool isOnline = status == "ONLINE";
 
@@ -68,8 +68,8 @@ class PrinterStatusCubit extends Cubit<PrinterStatusState> {
         return false;
       }
     } catch (e, stackTrace) {
-      print('Ошибка при получении сетевого статуса: $e');
-      print('Стек вызовов: $stackTrace');
+      // print('Ошибка при получении сетевого статуса: $e');
+      // print('Стек вызовов: $stackTrace');
 
       final failureState = PrinterNetworkStatusFailure('Ошибка сети: $e');
       emit(failureState);
@@ -118,8 +118,8 @@ class PrinterStatusCubit extends Cubit<PrinterStatusState> {
         );
       }
     } catch (e, stackTrace) {
-      print('Ошибка при конфигурации принтера: $e');
-      print('Стек вызовов: $stackTrace');
+      // print('Ошибка при конфигурации принтера: $e');
+      // print('Стек вызовов: $stackTrace');
       emit(PrinterConfigurationFailure('Ошибка сети: $e'));
     }
   }
@@ -159,8 +159,8 @@ class PrinterStatusCubit extends Cubit<PrinterStatusState> {
         );
       }
     } catch (e, stackTrace) {
-      print('Ошибка при отправке задания на печать: $e');
-      print('Стек вызовов: $stackTrace');
+      // print('Ошибка при отправке задания на печать: $e');
+      // print('Стек вызовов: $stackTrace');
 
       emit(PrinterLabelPrintFailure('Ошибка сети: $e'));
     }

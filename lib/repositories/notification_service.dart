@@ -85,11 +85,11 @@ class NotificationService {
         windows: windowsDetails,
       );
 
-      print('[NOTIFICATION] Попытка показать уведомление: $title');
+      // print('[NOTIFICATION] Попытка показать уведомление: $title');
       await _notifications.show(notificationId, title, body, details);
-      print('[NOTIFICATION] Уведомление успешно показано');
+      // print('[NOTIFICATION] Уведомление успешно показано');
     } catch (e) {
-      print('[NOTIFICATION] Ошибка при показе уведомления: $e');
+      // print('[NOTIFICATION] Ошибка при показе уведомления: $e');
     }
   }
 }

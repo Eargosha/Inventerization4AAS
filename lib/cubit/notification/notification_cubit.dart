@@ -37,23 +37,23 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   Future<void> _fetchAndShowNew() async {
     final response = await repository.getNotifications();
-    print(
-      "[==+==] Получили ответ от сервера: ${response.message} и это значит ${response.success}",
-    );
-    print("[==+==] Все уведоления: ${response.data}");
+    // print(
+    //   "[==+==] Получили ответ от сервера: ${response.message} и это значит ${response.success}",
+    // );
+    // print("[==+==] Все уведоления: ${response.data}");
     if (response.success && response.data is List<InvNotification>) {
       final List<InvNotification> remote = response.data;
-      print("[==+==] Фильтруемся");
+      // print("[==+==] Фильтруемся");
       // Фильтруем: только те, где есть моя роль
       final List<InvNotification> forMe = remote.where((n) {
-        print('[==+==] Уведомление для роли: ${n.destinationRoles}');
-        print('[==+==] Мои роли: ${_userRoles}');
+        // print('[==+==] Уведомление для роли: ${n.destinationRoles}');
+        // print('[==+==] Мои роли: ${_userRoles}');
         // Проверяем, есть ли хотя бы одна общая роль
         return n.destinationRoles
             .map((r) => r.toString())
             .any((role) => _userRoles!.contains(role));
       }).toList();
-      print("[==+==] Для меня уведомления: $forMe");
+      // print("[==+==] Для меня уведомления: $forMe");
 
       // Находим новые
       final List<InvNotification> newOnes = forMe
@@ -68,7 +68,7 @@ class NotificationCubit extends Cubit<NotificationState> {
       // Показываем локальное уведомление для каждого нового
       for (final noti in newOnes) {
         if (!noti.isRead) {
-          print('[==+==] ПОКАЗЫВАЕМ УВЕДОМЛЕНИЕ: ${noti.title}');
+          // print('[==+==] ПОКАЗЫВАЕМ УВЕДОМЛЕНИЕ: ${noti.title}');
           NotificationService().show(
             title: noti.title,
             body: noti.body,
@@ -77,12 +77,12 @@ class NotificationCubit extends Cubit<NotificationState> {
         }
       }
 
-      print('[==+==] Перед Emit у нас получается такой список forMe:');
-      print(forMe);
-      print(
-        '[==+==] Перед Emit у нас получается такой список локальных _notifications:',
-      );
-      print(_notifications);
+      // print('[==+==] Перед Emit у нас получается такой список forMe:');
+      // print(forMe);
+      // print(
+      //   '[==+==] Перед Emit у нас получается такой список локальных _notifications:',
+      // );
+      // print(_notifications);
 
       emit(NotificationUpdated(_notifications));
     }
@@ -112,7 +112,7 @@ class NotificationCubit extends Cubit<NotificationState> {
       // Можно обновить список, если нужно
       await _fetchAndShowNew(); // перезагрузим, чтобы увидеть новое уведомление
     } else {
-      print('[==+==] Ошибка отправки уведомления: ${response.message}');
+      // print('[==+==] Ошибка отправки уведомления: ${response.message}');
     }
   }
 

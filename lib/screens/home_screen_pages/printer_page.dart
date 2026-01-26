@@ -377,7 +377,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
                               },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  print('VALIDATOR WORKSSSSSSSSSSSSSSSS');
+                                  // print('VALIDATOR WORKSSSSSSSSSSSSSSSS');
                                   return 'Пожалуйста, выберите объект';
                                 }
                                 return null;

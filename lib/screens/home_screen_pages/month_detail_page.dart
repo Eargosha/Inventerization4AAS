@@ -202,7 +202,7 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
           content: Text('Сохранение не поддерживается на этой платформе'),
         ),
       );
-      print('Платформа не поддерживается: ${Platform.operatingSystem}');
+      // print('Платформа не поддерживается: ${Platform.operatingSystem}');
     }
   }
 
@@ -219,13 +219,13 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
       if (savePath != null) {
         final file = File(savePath);
         await file.writeAsBytes(bytes);
-        print('Файл сохранен: $savePath');
+        // print('Файл сохранен: $savePath');
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Файл успешно сохранен')));
       }
     } catch (e) {
-      print('Ошибка сохранения файла: $e');
+      // print('Ошибка сохранения файла: $e');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Ошибка сохранения файла: $e')));
@@ -257,14 +257,14 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
       final filePath = await FlutterFileDialog.saveFile(params: params);
 
       if (filePath != null) {
-        print('Файл сохранен: $filePath');
+        // print('Файл сохранен: $filePath');
         // Показать уведомление об успешном сохранении
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Файл успешно сохранен')));
       }
     } catch (e) {
-      print('Ошибка сохранения файла: $e');
+      // print('Ошибка сохранения файла: $e');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Ошибка сохранения файла: $e')));
@@ -294,7 +294,7 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
         month: monthNumber.toString(),
         onChanged: (date) {
           if (date != null) {
-            print('Выбранная дата: $date');
+            // print('Выбранная дата: $date');
             context.read<TransferCubit>().loadTransfers({
               'month': monthNumber,
               'year': widget.year,
@@ -325,7 +325,7 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
                     'Из кабинета ',
                     '',
                   );
-                  print('[==+==] Выбрали $cabinetNumber');
+                  // print('[==+==] Выбрали $cabinetNumber');
                   context.read<TransferCubit>().loadTransfers({
                     'from_where': cabinetNumber,
                     'month': monthNumber,
@@ -366,7 +366,7 @@ class _MonthDetailScreenState extends State<MonthDetailScreen> {
                     'В кабинет ',
                     '',
                   );
-                  print('[==+==] Выбрали $cabinetNumber');
+                  // print('[==+==] Выбрали $cabinetNumber');
                   context.read<TransferCubit>().loadTransfers({
                     'to_where': cabinetNumber,
                     'month': monthNumber,

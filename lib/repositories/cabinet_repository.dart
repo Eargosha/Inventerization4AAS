@@ -27,7 +27,7 @@ class CabinetRepository {
         );
       }
 
-      print('Ответ от сервера: $jsonMap');
+      // print('Ответ от сервера: $jsonMap');
 
       try {
         return ApiResponse.fromJson(jsonMap);
@@ -38,8 +38,8 @@ class CabinetRepository {
         );
       }
     } catch (e, stackTrace) {
-      print('Произошла ошибка при загрузке кабинетов: $e');
-      print('Стек вызовов: $stackTrace');
+      // print('Произошла ошибка при загрузке кабинетов: $e');
+      // print('Стек вызовов: $stackTrace');
       return ApiResponse(success: false, message: 'Внутренняя ошибка: $e');
     }
   }

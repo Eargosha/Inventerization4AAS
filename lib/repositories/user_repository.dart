@@ -93,7 +93,7 @@ class UserRepository {
         );
       }
 
-      print('Ответ от сервера: $jsonMap');
+      // print('Ответ от сервера: $jsonMap');
 
       // Парсинг ответа в объект ApiResponse
       try {
@@ -106,8 +106,8 @@ class UserRepository {
       }
     } catch (e, stackTrace) {
       // Ловим любые исключения и возвращаем их как часть ответа
-      print('Произошла ошибка при входе: $e');
-      print('Стек вызовов: $stackTrace');
+      // print('Произошла ошибка при входе: $e');
+      // print('Стек вызовов: $stackTrace');
       return ApiResponse(success: false, message: 'Внутренняя ошибка: $e');
     }
   }
@@ -197,7 +197,7 @@ class UserRepository {
         );
       }
 
-      print('Ответ от сервера: $jsonMap');
+      // print('Ответ от сервера: $jsonMap');
 
       // Парсинг ответа в объект ApiResponse
       try {
@@ -210,8 +210,8 @@ class UserRepository {
       }
     } catch (e, stackTrace) {
       // Ловим любые исключения и возвращаем их как часть ответа
-      print('Произошла ошибка при входе: $e');
-      print('Стек вызовов: $stackTrace');
+      // print('Произошла ошибка при входе: $e');
+      // print('Стек вызовов: $stackTrace');
       return ApiResponse(success: false, message: 'Внутренняя ошибка: $e');
     }
   }

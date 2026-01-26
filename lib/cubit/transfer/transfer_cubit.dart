@@ -97,13 +97,13 @@ class TransferCubit extends Cubit<TransferState> {
             .map((item) => Transfer.fromJson(item))
             .toList();
 
-        print(
-          "[==+==] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Transfers загружены",
-        );
-        print(transfers);
-        transfers.forEach(
-          (element) => print(element.id.toString() + "  ___   "),
-        );
+        // print(
+        //   // "[==+==] !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Transfers загружены",
+        // );
+        // print(transfers);
+        // transfers.forEach(
+        //   (element) => print(element.id.toString() + "  ___   "),
+        // );
 
         emit(
           TransferLoadSuccess(

@@ -20,8 +20,8 @@ class Transfer {
   });
 
   Transfer.fromJson(Map<String, dynamic> json) {
-    print("[++++++++++++] JSON ДЛЯ КАЖДОГО TRANSFER");
-    print(json);
+    // print("[++++++++++++] JSON ДЛЯ КАЖДОГО TRANSFER");
+    // print(json);
     id = int.tryParse(json['id'].toString()) ?? 0;
     date = json['date']?.toString() ?? '';
     name = json['name']?.toString() ?? '';
